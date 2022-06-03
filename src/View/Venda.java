@@ -275,37 +275,37 @@ public class Venda extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 private Produto produto;
     private DefaultTableModel Tabela;
-    
+
 
     private void txtIDProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDProActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIDProActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        
+
         try {
             // Conectar com o BD
             Connection con;
             PreparedStatement st;
             ResultSet rs;
-            
+
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/lojinha", "root", "46813252");
-            
+
             st = con.prepareStatement("SELECT *FROM  produto WHERE IDPro = ?");
             st.setString(1, txtIDPro.getText());
             rs = st.executeQuery();
             if (rs.next()) { // se encontrou ID no BD
                 txtProduto.setText(rs.getString("Produto"));
                 txtValorV.setText(rs.getString("ValorV"));
-                
+
             } else {
                 JOptionPane.showMessageDialog(null, "Produto não encontrado");
             }
         } catch (ClassNotFoundException | SQLException ex) {
             JOptionPane.showMessageDialog(null, "Erro no acesso à base de dados. Entre em contato com o administrador e informe o erro: " + ex.getMessage());
         }
-        
+
 
     }//GEN-LAST:event_btnConsultarActionPerformed
 
@@ -319,20 +319,20 @@ private Produto produto;
 
     private void txtQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantidadeActionPerformed
         Somatotal();
-        
+
 
     }//GEN-LAST:event_txtQuantidadeActionPerformed
 
     private void txtValorVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorVActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtValorVActionPerformed
-    
+
 
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
 
         //Obtém a tabela para trabalhar nela
         Tabela = (DefaultTableModel) TabelaProduto.getModel();
-        
+
         if (!txtIDPro.getText().equalsIgnoreCase("Clique aqui para pesquisar o produto...")) {
 
             //Cria array com valores do produto
@@ -348,51 +348,47 @@ private Produto produto;
             Tabela.addRow(Novo);
             atualizaSubtotal();
             limpaVenda();
-            
+
         } else {
             //informa usuario que nao tem quantidade suficiente em estoque 
             //para inserir na venda
             JOptionPane.showMessageDialog(rootPane,
                     "Erro, Acionar o Administrador do sistema! \n");
-            
+
 
     }//GEN-LAST:event_btnAdicionarActionPerformed
-        
+
     }
 
     private void btRegistrarVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegistrarVendaActionPerformed
         VendaDao Vendido = new VendaDao();
         Tabela tabela = new DTO.Tabela();
-        
+
         Tabela = (DefaultTableModel) TabelaProduto.getModel();
-        
+
         for (int i = 0; i + 1 <= TabelaProduto.getModel().getRowCount(); i++) {
             //obtem o id dessa linha
-
+          
             tabela.setCodigo((String) TabelaProduto.getValueAt(i, 0));
             tabela.setProduto((String) TabelaProduto.getValueAt(i, 1));
             tabela.setQuantidade((Double) TabelaProduto.getValueAt(i, 2));
             tabela.setValorUnitario((Double) TabelaProduto.getValueAt(i, 3));
             tabela.setValorTotal((Float) TabelaProduto.getValueAt(i, 4));
             
-            TabelaProduto.setModel(Tabela);
-            
+            Object[] Novo = new Object[5];
+
             Vendido.registrar(tabela);
-            
-            
-             int result = Vendido.registrar(tabela);
-             
-        if (result == 1) { // se conectou {
 
-            JOptionPane.showMessageDialog(null, "Usuario cadastrado com sucesso.");
+            int result = Vendido.registrar(tabela);
 
-            
+            if (result == 1) { // se conectou {
 
-        } else {
-            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao cadastrar usuário");
-            
-            
-        }
+                JOptionPane.showMessageDialog(null, "Usuario cadastrado com sucesso.");
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Ocorreu um erro ao cadastrar usuário");
+
+            }
         }
     }//GEN-LAST:event_btRegistrarVendaActionPerformed
 
@@ -407,22 +403,22 @@ private Produto produto;
     private void txtQuantidadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtQuantidadeFocusLost
         Somatotal();
     }//GEN-LAST:event_txtQuantidadeFocusLost
-    
+
     public void atualizaSubtotal() {
         Float subtotal = 0f;
         int valor = TabelaProduto.getRowCount();
 
         //faz cálculo de subtotal da compra
         for (int i = 0; i < valor; i++) {
-            
+
             subtotal += (Float) TabelaProduto.getValueAt(i, 4);
         }
 
         //insere valor subtotal da compra na label
         txtSubtotal.setText(subtotal.toString());
-        
+
     }
-    
+
     public void limpaVenda() {
         //Limpa todos os campos de produto
         txtIDPro.setText("");
@@ -431,17 +427,17 @@ private Produto produto;
         txtValorTotal.setText("0");
         txtValorV.setText("0");
     }
-    
+
     private void Somatotal() {
         double quantidade, valorV, soma;
         quantidade = Double.parseDouble(txtQuantidade.getText());
         valorV = Double.parseDouble(txtValorV.getText());
         soma = quantidade * valorV;
-        
+
         txtValorTotal.setText(String.valueOf(soma));
-        
+
     }
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

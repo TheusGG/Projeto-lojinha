@@ -45,12 +45,11 @@ public class VendaDao {
         Tabela salvar = new DTO.Tabela();
 
         LinkedList<Tabela> produtos = new LinkedList<>();
-        
-         
+      
 
         try {
 
-            String comando = "INSERT TO venda (Codigo,Produto,Quantidade,ValorUnitario,ValorTotal) Values (?,?,?,?,?)";
+            String comando = "insert to venda (Codigo,Produto,Quantidade,ValorUnitario,ValorTotal) Values (?,?,?,?,?)";
 
             st = con.prepareStatement(comando);
 
@@ -61,7 +60,7 @@ public class VendaDao {
             st.setDouble(4, tabela.getValorUnitario());
             st.setFloat(5, tabela.getValorTotal());
           
-            produtos.add(tabela);
+            
 
             int result = st.executeUpdate();;
 
